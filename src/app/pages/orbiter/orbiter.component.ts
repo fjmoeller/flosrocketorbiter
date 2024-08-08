@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { AmbientLight, Camera, Clock, DirectionalLight, PerspectiveCamera, Renderer, Scene, Vector3, WebGLRenderer } from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { AmbientLight, Camera, Clock, DirectionalLight, PerspectiveCamera, Scene, Vector3, WebGLRenderer } from 'three';
 import { PhysicsService } from '../../services/physics.service';
 
 @Component({
