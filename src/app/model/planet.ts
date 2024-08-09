@@ -1,19 +1,22 @@
-import { EllipseCurve, Object3D, Line } from "three";
-import { GravityProducer } from "./gravityObject";
+import { EllipseCurve, Object3D, Line, Vector3 } from "three";
+import { GravityProducer, GravityConsumer } from "./gravityObject";
 
-export interface Planet extends GravityProducer {
-    path: EllipseCurve;
-    pathGeometry: Line;
-    orbitSpeed: number;
+export interface Planet extends GravityProducer,GravityConsumer {
+    //path: EllipseCurve;
+    //pathGeometry: Line;
+    //orbitSpeed: number;
 }
 
 export interface ImportPlanet { //TODO rotation speed around axis && axis definition (can be tilted)
     id: number;
     name: string;
     radius: number;
-    orbitSpeed: number;
+    //orbitSpeed: number;
+    initialMovement: Vector3;
+    initialPosition: Vector3;
     texture: string;
-    startDelta: number;
+    stationary: boolean,
+    //startDelta: number;
     gravity: number; //mass * grav constant to make numbers smaller
-    planetPath: EllipseCurve; //TODO change this to use parameters instead
+    //planetPath: EllipseCurve; //TODO change this to use parameters instead
 }

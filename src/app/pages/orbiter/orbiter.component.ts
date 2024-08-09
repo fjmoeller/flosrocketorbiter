@@ -25,7 +25,7 @@ export class OrbiterComponent implements OnInit {
   private paused: boolean = false;
 
   private scene?: Scene;
-  private controls?: OrbitControls;
+  private cameraControls?: OrbitControls;
   private camera?: PerspectiveCamera;
   private renderer?: WebGLRenderer;
 
@@ -40,22 +40,9 @@ export class OrbiterComponent implements OnInit {
 
     this.scene = new Scene();
 
-    const pointLight = new DirectionalLight(0xffffff, 0.5);
-    pointLight.position.set(100, 100, -100);
-    /*if (this.ENABLE_SHADOWS) {
-      pointLight.castShadow = true;
-      pointLight.shadow.mapSize.width = 1024;
-      pointLight.shadow.mapSize.height = 1024;
-      pointLight.shadow.camera.near = 0.5;
-      pointLight.shadow.camera.far = 2000;
-      //const helper = new CameraHelper(pointLight.shadow.camera);
-      //scene.add(helper);
-    }*/
-    this.scene.add(pointLight);
     const ambientLight = new AmbientLight(0xffffff, 0.8);
     this.scene.add(ambientLight);
 
-    //scene.add( new Box3Helper( new Box3().setFromObject(mocGroup), new Color(0xffff00) ) );
     const axesHelper = new AxesHelper( 20 );
     this.scene.add( axesHelper );
 
@@ -73,13 +60,9 @@ export class OrbiterComponent implements OnInit {
 
     this.renderer = new WebGLRenderer({ antialias: true, canvas: canvas });
     this.renderer.setClearColor(0x19212D, 1);
-    /*if (this.ENABLE_SHADOWS) {
-      renderer.shadowMap.enabled = true;
-      renderer.shadowMap.type = BasicShadowMap;
-    }*/
     this.renderer.setSize(canvas.clientWidth, canvas.clientHeight);
     this.renderer.setPixelRatio(window.devicePixelRatio * 1.5);
-    this.renderer.setClearColor("rgb(88,101,117)");
+    this.renderer.setClearColor("rgb(0,0,0)");
 
     window.addEventListener('resize', () => { //TODO doesnt work right yet
       if (!this.camera || !this.renderer || !this.scene) return;
@@ -90,31 +73,34 @@ export class OrbiterComponent implements OnInit {
       this.renderer.render(this.scene, this.camera);
     });
 
-    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-    this.controls.target = new Vector3(0, 0, 0);
-    this.controls.enablePan = false;
-    this.controls.maxDistance = 500;
-    this.controls.minDistance = 10;
+    this.cameraControls = new OrbitControls(this.camera, this.renderer.domElement);
+    this.cameraControls.target = new Vector3(0, 0, 0);
+    this.cameraControls.enablePan = false;
+    this.cameraControls.maxDistance = 1000000;
+    this.cameraControls.minDistance = 10;
 
     const planets = this.planetService.createPlanets();
     for(const planet of planets){
-      this.scene.add(planet.object,planet.pathGeometry);
+      this.scene.add(planet.object);
     }
 
     const update = () => {
-      if (!this.controls || !this.renderer || !this.scene || !this.camera) return;
+      if (!this.cameraControls || !this.renderer || !this.scene || !this.camera) return;
+      
+      //generate frame
       if (this.fpsClock.getElapsedTime() > this.MAX_FPS) {
         this.fpsClock.start();
-        this.controls.update();
+        this.cameraControls.update();
         this.renderer.render(this.scene, this.camera);
       }
 
+      //make physics tick
       if (this.physicsClock.getElapsedTime() > this.PHYSICS_FPS) {
-        this.physicsService.makePhysicsTimestep(planets, [], this.physicsClock.getElapsedTime()); //TODO
+        this.physicsService.makePhysicsTimestep(planets, planets, this.physicsClock.getElapsedTime());
         this.physicsClock.start();
-        this.planetService.movePlanets(planets,this.timeClock.getElapsedTime());
       }
 
+      //next
       if (!this.paused)
         window.requestAnimationFrame(update);
       else
@@ -122,6 +108,8 @@ export class OrbiterComponent implements OnInit {
     }
 
     this.timeClock.start();
+    this.physicsClock.start();
+    this.fpsClock.start();
     update();
   }
 }

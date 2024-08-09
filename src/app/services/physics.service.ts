@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { GravityReceiver as GravityConsumer, GravityProducer } from '../model/gravityObject';
+import { GravityConsumer as PhysicsConsumer, GravityProducer as PhysicsProducer } from '../model/gravityObject';
 import { Vector3 } from 'three';
 
 @Injectable({
@@ -12,18 +12,31 @@ export class PhysicsService {
 
   constructor() { }
 
-  public makePhysicsTimestep(producers: GravityProducer[], consumers: GravityConsumer[], timeDelta: number) {
+  public makePhysicsTimestep(producers: PhysicsProducer[], consumers: PhysicsConsumer[], timeDelta: number) {
     for (const consumer of consumers) {
-      let gravityForce = new Vector3(0,0,0);
+      if(consumer.stationary) continue; //stationary objects dont get moved
+      let gravityForce = new Vector3(0, 0, 0);
       for (const producer of producers) {
-        if(consumer.id === producer.id) continue;
+        if (consumer.id === producer.id) continue; //dont make objects add gravity forces onto themself
         const force = producer.gravity / ((consumer.object.position.distanceTo(producer.object.position)) ^ 2);
-        const forceVector = consumer.object.position.sub(producer.object.position); //TODO correct like this?
-        var oldLength = forceVector.length();
-        if (oldLength !== 0)
-          gravityForce.add(forceVector.multiplyScalar(1 + (force / oldLength))); //TODO put into other funtion?
+        const direction = producer.object.position.clone().sub(consumer.object.position);
+        var distance = direction.length();
+        if (distance !== 0) //only if the things arent on the exact same point
+          gravityForce.add(direction.multiplyScalar(1 + (force / distance))); //TODO check calc, what it should do: scale the direction vector to the force length
       }
-      consumer.object.position.add(gravityForce);
+      consumer.object.position.add(consumer.movement.add(gravityForce).clone().multiplyScalar(timeDelta).multiplyScalar(0.5)); //TODO multiply correct?
+
+      //do same thing again
+      gravityForce = new Vector3(0, 0, 0);
+      for (const producer of producers) {
+        if (consumer.id === producer.id) continue; //dont make objects add gravity forces onto themself
+        const force = producer.gravity / ((consumer.object.position.distanceTo(producer.object.position)) ^ 2);
+        const direction = producer.object.position.clone().sub(consumer.object.position);
+        var distance = direction.length();
+        if (distance !== 0) //only if the things arent on the exact same point
+          gravityForce.add(direction.multiplyScalar(1 + (force / distance)));
+      }
+      consumer.object.position.add(consumer.movement.add(gravityForce).clone().multiplyScalar(timeDelta).multiplyScalar(0.5));
     }
   }
 }
