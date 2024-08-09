@@ -1,12 +1,13 @@
 import { Object3D, Vector3 } from "three";
 
 export interface GravityProducer {
+    id: number;
     object: Object3D;
     gravity: number; //mass * grav constant to make numbers smaller
 }
 
 export interface GravityReceiver {
-    direction: Vector3;
+    id: number;
     object: Object3D;
 }
 

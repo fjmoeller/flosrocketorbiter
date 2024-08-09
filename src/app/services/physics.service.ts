@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { GravityReceiver as GravityConsumer, GravityProducer } from '../model/gravityObject';
+import { Vector3 } from 'three';
 
 @Injectable({
   providedIn: 'root'
@@ -11,16 +12,18 @@ export class PhysicsService {
 
   constructor() { }
 
-  public makeTimestep(producers: GravityProducer[], consumers: GravityConsumer[], timeDelta: number) {
+  public makePhysicsTimestep(producers: GravityProducer[], consumers: GravityConsumer[], timeDelta: number) {
     for (const consumer of consumers) {
+      let gravityForce = new Vector3(0,0,0);
       for (const producer of producers) {
+        if(consumer.id === producer.id) continue;
         const force = producer.gravity / ((consumer.object.position.distanceTo(producer.object.position)) ^ 2);
-        const forceVector = consumer.object.position.sub(producer.object.position); //TODO other funtion
+        const forceVector = consumer.object.position.sub(producer.object.position); //TODO correct like this?
         var oldLength = forceVector.length();
         if (oldLength !== 0)
-          consumer.direction = consumer.direction.add(forceVector.multiplyScalar(1 + (force / oldLength))); //TODO other funtion
+          gravityForce.add(forceVector.multiplyScalar(1 + (force / oldLength))); //TODO put into other funtion?
       }
-      consumer.object.position.add(consumer.direction);
+      consumer.object.position.add(gravityForce);
     }
   }
 }
