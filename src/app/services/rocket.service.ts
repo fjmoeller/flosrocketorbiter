@@ -14,6 +14,8 @@ export class RocketService {
     const material = new MeshBasicMaterial({ color: new Color().setHex(Math.random() * 0xffffff) });
     const mesh = new Mesh(geometry, material);
 
+
+
     mesh.position.x = 100;
 
     const r: Rocket = {

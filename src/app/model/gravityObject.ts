@@ -1,4 +1,4 @@
-import { Object3D, Vector3 } from "three";
+import { Line, Object3D, Vector3 } from "three";
 
 export interface GravityProducer {
     id: number; //TODO change this id stuff or maybe have a global id counter?
@@ -10,10 +10,12 @@ export interface GravityConsumer {
     id: number;
     object: Object3D;
     movement: Vector3;
-    stationary : boolean;
+    stationary: boolean;
+    orbitalLine?: Line;
+    previousPositions?: Vector3[];
 }
 
-export enum SolarSystemPlanet{
+export enum SolarSystemPlanet {
     EARTH,
     SUN,
     VENUS

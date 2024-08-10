@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { AmbientLight, AxesHelper, Camera, Clock, DirectionalLight, PerspectiveCamera, Scene, Vector3, WebGLRenderer } from 'three';
+import { AmbientLight, AxesHelper, Camera, Clock, DirectionalLight, Line, PerspectiveCamera, Scene, Vector3, WebGLRenderer } from 'three';
 import { PhysicsService } from '../../services/physics.service';
 import { PlanetService } from '../../services/planet.service';
+import { OrbitVisuService } from '../../services/orbit-visu.service';
 
 @Component({
   selector: 'app-orbiter',
@@ -14,6 +15,7 @@ import { PlanetService } from '../../services/planet.service';
 export class OrbiterComponent implements OnInit {
 
   //public ENABLE_SHADOWS: boolean = false;
+  private readonly SHOW_TRAILLINE: boolean = true;
 
   private readonly fpsClock = new Clock();
   private readonly physicsClock = new Clock();
@@ -29,7 +31,7 @@ export class OrbiterComponent implements OnInit {
   private camera?: PerspectiveCamera;
   private renderer?: WebGLRenderer;
 
-  public constructor(private physicsService: PhysicsService,private planetService: PlanetService) {
+  public constructor(private physicsService: PhysicsService, private planetService: PlanetService, private orbitVisuService: OrbitVisuService) {
   }
 
   ngOnInit(): void {
@@ -43,8 +45,8 @@ export class OrbiterComponent implements OnInit {
     const ambientLight = new AmbientLight(0xffffff, 0.8);
     this.scene.add(ambientLight);
 
-    const axesHelper = new AxesHelper( 20 );
-    this.scene.add( axesHelper );
+    const axesHelper = new AxesHelper(20);
+    this.scene.add(axesHelper);
 
     const canvas = document.getElementById('canvas-viewer');
     if (!canvas) {
@@ -80,13 +82,16 @@ export class OrbiterComponent implements OnInit {
     this.cameraControls.minDistance = 10;
 
     const planets = this.planetService.createPlanets();
-    for(const planet of planets){
+    for (const planet of planets) {
       this.scene.add(planet.object);
+      if(planet.orbitalLine){
+        this.scene.add(planet.orbitalLine);
+      }
     }
 
     const update = () => {
       if (!this.cameraControls || !this.renderer || !this.scene || !this.camera) return;
-      
+
       //generate frame
       if (this.fpsClock.getElapsedTime() > this.MAX_FPS) {
         this.fpsClock.start();
@@ -98,6 +103,7 @@ export class OrbiterComponent implements OnInit {
       if (this.physicsClock.getElapsedTime() > this.PHYSICS_FPS) {
         this.physicsService.makePhysicsTimestep(planets, planets, this.physicsClock.getElapsedTime());
         this.physicsClock.start();
+        this.orbitVisuService.updateOrbitTrails(planets);
       }
 
       //next
