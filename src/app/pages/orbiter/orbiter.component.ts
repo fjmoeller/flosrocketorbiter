@@ -1,9 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { AmbientLight, AxesHelper, Camera, Clock, DirectionalLight, Line, PerspectiveCamera, Scene, Vector3, WebGLRenderer } from 'three';
 import { PhysicsService } from '../../services/physics.service';
 import { PlanetService } from '../../services/planet.service';
 import { OrbitVisuService } from '../../services/orbit-visu.service';
+import { PlayerInputService } from '../../services/player-input.service';
+import { RocketService } from '../../services/rocket.service';
+import { PhysicsConsumer } from '../../model/gravityObject';
 
 @Component({
   selector: 'app-orbiter',
@@ -14,8 +17,16 @@ import { OrbitVisuService } from '../../services/orbit-visu.service';
 })
 export class OrbiterComponent implements OnInit {
 
+  @HostListener('document:keypress', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    if (this.activeVessel)
+      this.playerInputService.handlePlayerKeyboardInput(event, this.activeVessel);
+  }
+
   //public ENABLE_SHADOWS: boolean = false;
   private readonly SHOW_TRAILLINE: boolean = true;
+
+  private activeVessel?: PhysicsConsumer;
 
   private readonly fpsClock = new Clock();
   private readonly physicsClock = new Clock();
@@ -31,7 +42,11 @@ export class OrbiterComponent implements OnInit {
   private camera?: PerspectiveCamera;
   private renderer?: WebGLRenderer;
 
-  public constructor(private physicsService: PhysicsService, private planetService: PlanetService, private orbitVisuService: OrbitVisuService) {
+  public constructor(private physicsService: PhysicsService,
+    private planetService: PlanetService,
+    private orbitVisuService: OrbitVisuService,
+    private playerInputService: PlayerInputService,
+    private rocketService: RocketService) {
   }
 
   ngOnInit(): void {
@@ -81,13 +96,20 @@ export class OrbiterComponent implements OnInit {
     this.cameraControls.maxDistance = 1000000;
     this.cameraControls.minDistance = 10;
 
+    const vessels: PhysicsConsumer[] = [];
+
     const planets = this.planetService.createPlanets();
     for (const planet of planets) {
       this.scene.add(planet.object);
-      if(planet.orbitalLine){
+      vessels.push(planet);
+      if (planet.orbitalLine)
         this.scene.add(planet.orbitalLine);
-      }
     }
+
+    const vessel = this.rocketService.createRocket();
+    this.scene.add(vessel.object);
+    vessels.push(vessel);
+    this.activeVessel = vessel;
 
     const update = () => {
       if (!this.cameraControls || !this.renderer || !this.scene || !this.camera) return;
@@ -95,15 +117,17 @@ export class OrbiterComponent implements OnInit {
       //generate frame
       if (this.fpsClock.getElapsedTime() > this.MAX_FPS) {
         this.fpsClock.start();
+        if (this.activeVessel)
+          this.cameraControls.target = this.activeVessel.object.position;
         this.cameraControls.update();
         this.renderer.render(this.scene, this.camera);
       }
 
       //make physics tick
       if (this.physicsClock.getElapsedTime() > this.PHYSICS_FPS) {
-        this.physicsService.makePhysicsTimestep(planets, planets, this.physicsClock.getElapsedTime());
+        this.physicsService.makePhysicsTimestep([], vessels, this.physicsClock.getElapsedTime()); //TODO change camera position for active target too
         this.physicsClock.start();
-        this.orbitVisuService.updateOrbitTrails(planets);
+        this.orbitVisuService.updateOrbitTrails(vessels);
       }
 
       //next

@@ -1,12 +1,12 @@
 import { Object3D, Vector3 } from "three";
-import { GravityConsumer } from "./gravityObject";
+import { PhysicsConsumer } from "./gravityObject";
 
-export interface Rocket extends GravityConsumer {
-   
+export interface Rocket extends PhysicsConsumer {
+
 }
 
 export interface SpawnRocket {
-    rocket:Rocket,
-    spawnPoint:Vector3,
-    initalMovement: Vector3
+    rocket: Rocket,
+    spawnPoint: Vector3,
+    initalAccelaration: Vector3
 }

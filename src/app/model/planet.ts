@@ -1,7 +1,7 @@
-import { EllipseCurve, Object3D, Line, Vector3 } from "three";
-import { GravityProducer, GravityConsumer } from "./gravityObject";
+import { Vector3 } from "three";
+import { PhysicsConsumer, PhysicsProducer } from "./gravityObject";
 
-export interface Planet extends GravityProducer,GravityConsumer {
+export interface Planet extends PhysicsProducer,PhysicsConsumer {
     //path: EllipseCurve;
     //pathGeometry: Line;
     //orbitSpeed: number;

@@ -36,7 +36,9 @@ export class PlanetService {
         movement: importPlanet.initialMovement,
         stationary: importPlanet.stationary,
         orbitalLine: line,
-        previousPositions: []
+        previousPositions: [],
+        activeControl: false,
+        acceleration: new Vector3(0, 0, 0)
       } as Planet);
     }
     return planets;

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { GravityConsumer } from '../model/gravityObject';
+import { PhysicsConsumer } from '../model/gravityObject';
 import { BufferGeometry, Color, Line, LineBasicMaterial, Points, PointsMaterial, Vector3 } from 'three';
 
 @Injectable({
@@ -9,14 +9,14 @@ export class OrbitVisuService {
 
   constructor() { }
 
-  public updateOrbitTrails(consumers: GravityConsumer[]): void {
-    for (const consumer of consumers) {
-      if (consumer.orbitalLine && consumer.previousPositions && !consumer.stationary) {
-        if (consumer.previousPositions.length >= 100)
-          consumer.previousPositions.shift();
-        consumer.previousPositions.push(consumer.object.position);
-        consumer.orbitalLine.geometry.setFromPoints(consumer.previousPositions);
-        consumer.orbitalLine.geometry.getAttribute("position").needsUpdate = true;
+  public updateOrbitTrails(vessels: PhysicsConsumer[]): void {
+    for (const vessel of vessels) {
+      if (vessel.orbitalLine && vessel.previousPositions && !vessel.stationary) {
+        if (vessel.previousPositions.length >= 100)
+          vessel.previousPositions.shift();
+        vessel.previousPositions.push(vessel.object.position);
+        vessel.orbitalLine.geometry.setFromPoints(vessel.previousPositions);
+        vessel.orbitalLine.geometry.getAttribute("position").needsUpdate = true;
       }
     }
   }
