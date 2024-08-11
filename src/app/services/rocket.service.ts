@@ -9,7 +9,7 @@ export class RocketService {
 
   constructor() { }
 
-  createRocket(): Rocket { //TODO change to use import
+  createRocket(): Rocket { //TODO change to use import like the planets do
     const geometry = new BoxGeometry(1, 1, 1);
     const material = new MeshBasicMaterial({ color: new Color().setHex(Math.random() * 0xffffff) });
     const mesh = new Mesh(geometry, material);

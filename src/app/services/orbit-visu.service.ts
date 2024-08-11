@@ -15,7 +15,7 @@ export class OrbitVisuService {
         if (consumer.previousPositions.length >= 1000)
           consumer.previousPositions.shift();
         //console.log(consumer.object.position);
-        consumer.previousPositions.push(consumer.object.position);
+        consumer.previousPositions.push(consumer.object.position.clone());
         consumer.orbitalLine.geometry.setFromPoints(consumer.previousPositions);
         consumer.orbitalLine.geometry.getAttribute("position").needsUpdate = true;
       }

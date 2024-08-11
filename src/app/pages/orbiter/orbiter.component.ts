@@ -21,7 +21,6 @@ export class OrbiterComponent implements OnInit {
   handleKeyboardEvent(event: KeyboardEvent) {
     if (this.activeVessel)
       this.playerInputService.handlePlayerKeyboardInput(event, this.activeVessel);
-    //console.log(this.scene?.toJSON());
   }
 
   //public ENABLE_SHADOWS: boolean = false;
