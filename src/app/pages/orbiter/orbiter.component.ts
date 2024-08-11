@@ -21,6 +21,7 @@ export class OrbiterComponent implements OnInit {
   handleKeyboardEvent(event: KeyboardEvent) {
     if (this.activeVessel)
       this.playerInputService.handlePlayerKeyboardInput(event, this.activeVessel);
+    console.log(this.scene?.toJSON());
   }
 
   //public ENABLE_SHADOWS: boolean = false;
@@ -106,10 +107,10 @@ export class OrbiterComponent implements OnInit {
         this.scene.add(planet.orbitalLine);
     }
 
-    const vessel = this.rocketService.createRocket();
+    /*const vessel = this.rocketService.createRocket();
     this.scene.add(vessel.object);
     vessels.push(vessel);
-    this.activeVessel = vessel;
+    this.activeVessel = vessel;*/
 
     const update = () => {
       if (!this.cameraControls || !this.renderer || !this.scene || !this.camera) return;
@@ -125,7 +126,7 @@ export class OrbiterComponent implements OnInit {
 
       //make physics tick
       if (this.physicsClock.getElapsedTime() > this.PHYSICS_FPS) {
-        this.physicsService.makePhysicsTimestep([], vessels, this.physicsClock.getElapsedTime()); //TODO change camera position for active target too
+        this.physicsService.makePhysicsTimestep(planets, vessels, this.physicsClock.getElapsedTime()); //TODO change camera position for active target too
         this.physicsClock.start();
         this.orbitVisuService.updateOrbitTrails(vessels);
       }

@@ -9,14 +9,15 @@ export class OrbitVisuService {
 
   constructor() { }
 
-  public updateOrbitTrails(vessels: PhysicsConsumer[]): void {
-    for (const vessel of vessels) {
-      if (vessel.orbitalLine && vessel.previousPositions && !vessel.stationary) {
-        if (vessel.previousPositions.length >= 100)
-          vessel.previousPositions.shift();
-        vessel.previousPositions.push(vessel.object.position);
-        vessel.orbitalLine.geometry.setFromPoints(vessel.previousPositions);
-        vessel.orbitalLine.geometry.getAttribute("position").needsUpdate = true;
+  public updateOrbitTrails(consumers: PhysicsConsumer[]): void {
+    for (const consumer of consumers) {
+      if (consumer.orbitalLine && consumer.previousPositions && !consumer.stationary) {
+        if (consumer.previousPositions.length >= 1000)
+          consumer.previousPositions.shift();
+        console.log(consumer.object.position);
+        consumer.previousPositions.push(consumer.object.position);
+        consumer.orbitalLine.geometry.setFromPoints(consumer.previousPositions);
+        //consumer.orbitalLine.geometry.getAttribute("position").needsUpdate = true;
       }
     }
   }
