@@ -69,13 +69,13 @@ export class OrbiterComponent implements OnInit {
       return;
     }
 
-    this.camera = new PerspectiveCamera(50, canvas.clientWidth / canvas.clientHeight, 0.5, 1000);
+    this.camera = new PerspectiveCamera(50, canvas.clientWidth / canvas.clientHeight, 0.5, 1000000);
     this.camera.position.z = -100;
     this.camera.position.y = 0;
     this.camera.position.x = -50;
     this.scene.add(this.camera);
 
-    this.renderer = new WebGLRenderer({ antialias: true, canvas: canvas });
+    this.renderer = new WebGLRenderer({ antialias: true, canvas: canvas, logarithmicDepthBuffer: true });
     this.renderer.setClearColor(0x19212D, 1);
     this.renderer.setSize(canvas.clientWidth, canvas.clientHeight);
     this.renderer.setPixelRatio(window.devicePixelRatio * 1.5);

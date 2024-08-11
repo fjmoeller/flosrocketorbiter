@@ -31,7 +31,6 @@ export class PhysicsService {
           totalForce.add(direction.multiplyScalar(1 + (force / distance))); //TODO check calc, what it should do: scale the direction vector to the force length
       }
 
-      
       consumer.object.position.add(consumer.movement.add(totalForce).clone().multiplyScalar(timeDelta / 2)); //TODO multiply correct?
     }
   }
