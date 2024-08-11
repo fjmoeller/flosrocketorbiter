@@ -14,10 +14,10 @@ export class OrbitVisuService {
       if (consumer.orbitalLine && consumer.previousPositions && !consumer.stationary) {
         if (consumer.previousPositions.length >= 1000)
           consumer.previousPositions.shift();
-        console.log(consumer.object.position);
+        //console.log(consumer.object.position);
         consumer.previousPositions.push(consumer.object.position);
         consumer.orbitalLine.geometry.setFromPoints(consumer.previousPositions);
-        //consumer.orbitalLine.geometry.getAttribute("position").needsUpdate = true;
+        consumer.orbitalLine.geometry.getAttribute("position").needsUpdate = true;
       }
     }
   }
