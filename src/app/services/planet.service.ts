@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Color, Mesh, MeshBasicMaterial, SphereGeometry, Vector3 } from 'three';
+import { Color, Euler, Mesh, MeshBasicMaterial, SphereGeometry, Vector3 } from 'three';
 import { ImportPlanet, Planet } from '../model/planet';
 import { planets } from '../../assets/planetData';
 import { OrbitVisuService } from './orbit-visu.service';
@@ -32,13 +32,15 @@ export class PlanetService {
       planets.push({
         id: importPlanet.id,
         object: sphere,
-        gravity: 6,
+        gravity: importPlanet.gravity,
         velocity: importPlanet.initialMovement,
         stationary: importPlanet.stationary,
         orbitalLine: line,
         previousPositions: [],
         activeControl: false,
-        acceleration: new Vector3(0, 0, 0)
+        acceleration: new Vector3(0, 0, 0),
+        position: importPlanet.initialPosition,
+        rotation: importPlanet.initialRotation ?? new Euler()
       } as Planet);
     }
     return planets;

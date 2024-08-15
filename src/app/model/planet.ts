@@ -1,10 +1,11 @@
-import { Vector3 } from "three";
+import { Euler, Vector3 } from "three";
 import { PhysicsConsumer, PhysicsProducer } from "./gravityObject";
 
 export interface Planet extends PhysicsProducer,PhysicsConsumer {
     //path: EllipseCurve;
     //pathGeometry: Line;
     //orbitSpeed: number;
+    rotation: Euler
 }
 
 export interface ImportPlanet { //TODO rotation speed around axis && axis definition (can be tilted)
@@ -18,5 +19,6 @@ export interface ImportPlanet { //TODO rotation speed around axis && axis defini
     stationary: boolean,
     //startDelta: number;
     gravity: number; //mass * grav constant to make numbers smaller
+    initialRotation: Euler
     //planetPath: EllipseCurve; //TODO change this to use parameters instead
 }
