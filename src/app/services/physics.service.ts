@@ -18,14 +18,16 @@ export class PhysicsService {
       if (consumer.stationary) continue; //stationary objects dont get moved
 
       const acceleration = new Vector3(0, 0, 0);
-      /*if (consumer.activeControl) { //add active control of spacecraft
+      if (consumer.activeControl) { //acceleration of the active control of spacecraft
         acceleration.add(consumer.acceleration.multiplyScalar(timeDelta));
         consumer.acceleration.copy(new Vector3(0, 0, 0)); //reset acceleration for this step
-      }*/
+      }
+
       for (const producer of producers) {
-        if (consumer.id === producer.id) continue; //dont make objects add gravity forces onto themself
-        const producerAcceleration = producer.gravity / (consumer.object.position.clone().distanceTo(producer.object.position.clone()) ^ 2);
-        const producerDirection = producer.object.position.clone().sub(consumer.object.position.clone());
+        if (consumer.id === producer.id) continue; //dont make objects add gravity forces onto themselves
+
+        const producerAcceleration = producer.gravity / (consumer.object.position.distanceTo(producer.object.position) ^ 2);
+        const producerDirection = producer.object.position.clone().sub(consumer.object.position);
         const producerDistance = producerDirection.length();
         if (producerDistance !== 0) { //only if the objects arent on the exact same point
           const normalizedProducerDirection = producerDirection.multiplyScalar(1 / producerDistance);
@@ -35,7 +37,7 @@ export class PhysicsService {
       //add average of acceleration of timestep
       consumer.object.position.add(consumer.velocity.clone().multiplyScalar(timeDelta / 2));
       consumer.velocity.add(acceleration); //update velocity
-      consumer.object.position.add(consumer.velocity.clone().multiplyScalar(timeDelta / 2)); //TODO multiply correct?
+      consumer.object.position.add(consumer.velocity.clone().multiplyScalar(timeDelta / 2));
     }
   }
 }

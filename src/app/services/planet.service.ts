@@ -10,7 +10,7 @@ import { OrbitVisuService } from './orbit-visu.service';
 })
 export class PlanetService {
 
-  private importPlanets: ImportPlanet[] = [];
+  private readonly importPlanets: ImportPlanet[] = [];
 
   constructor(private orbitVisuService: OrbitVisuService) {
     this.importPlanets = planets;
