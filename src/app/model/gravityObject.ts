@@ -9,7 +9,7 @@ export interface PhysicsProducer {
 export interface PhysicsConsumer {
     id: number;
     object: Object3D;
-    movement: Vector3;
+    velocity: Vector3;
     stationary: boolean;
     orbitalLine?: Line;
     previousPositions?: Vector3[];

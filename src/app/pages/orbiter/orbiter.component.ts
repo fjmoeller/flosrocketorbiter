@@ -1,6 +1,6 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { AmbientLight, AxesHelper, Camera, Clock, DirectionalLight, Line, PerspectiveCamera, Scene, Vector3, WebGLRenderer } from 'three';
+import { AmbientLight, AxesHelper, Clock, PerspectiveCamera, Scene, Vector3, WebGLRenderer } from 'three';
 import { PhysicsService } from '../../services/physics.service';
 import { PlanetService } from '../../services/planet.service';
 import { OrbitVisuService } from '../../services/orbit-visu.service';
@@ -17,7 +17,7 @@ import { PhysicsConsumer } from '../../model/gravityObject';
 })
 export class OrbiterComponent implements OnInit {
 
-  @HostListener('document:keypress', ['$event'])
+  @HostListener('document:keypress', ['$event']) //TODO maybe detect keyup & keydown
   handleKeyboardEvent(event: KeyboardEvent) {
     if (this.activeVessel)
       this.playerInputService.handlePlayerKeyboardInput(event, this.activeVessel);

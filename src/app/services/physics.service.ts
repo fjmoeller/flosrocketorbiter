@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
-import { PhysicsConsumer, PhysicsProducer } from '../model/gravityObject';
-import { Vector3 } from 'three';
+import {Injectable} from '@angular/core';
+import {PhysicsConsumer, PhysicsProducer} from '../model/gravityObject';
+import {Vector3} from 'three';
 
 @Injectable({
   providedIn: 'root'
@@ -10,28 +10,32 @@ export class PhysicsService {
   private readonly GRAVITATIONAL_CONSTANT = 6.6743e-11; //REMOVE
   private readonly EARTH_MASS = 5.9722e24; //REMOVE
 
-  constructor() {}
+  constructor() {
+  }
 
   public makePhysicsTimestep(producers: PhysicsProducer[], consumers: PhysicsConsumer[], timeDelta: number) {
     for (const consumer of consumers) {
       if (consumer.stationary) continue; //stationary objects dont get moved
-      consumer.object.position.add(consumer.movement.clone().multiplyScalar(timeDelta / 2));
 
-      const totalForce = new Vector3(0, 0, 0);
-      if (consumer.activeControl) {
-        totalForce.add(consumer.acceleration);
-        consumer.acceleration.copy(new Vector3(0, 0, 0));
-      }
+      const acceleration = new Vector3(0, 0, 0);
+      /*if (consumer.activeControl) { //add active control of spacecraft
+        acceleration.add(consumer.acceleration.multiplyScalar(timeDelta));
+        consumer.acceleration.copy(new Vector3(0, 0, 0)); //reset acceleration for this step
+      }*/
       for (const producer of producers) {
         if (consumer.id === producer.id) continue; //dont make objects add gravity forces onto themself
-        const force = producer.gravity / ((consumer.object.position.distanceTo(producer.object.position)) ^ 2);
-        const direction = producer.object.position.clone().sub(consumer.object.position);
-        var distance = direction.length();
-        if (distance !== 0) //only if the things arent on the exact same point
-          totalForce.add(direction.multiplyScalar(1 + (force / distance))); //TODO check calc, what it should do: scale the direction vector to the force length
+        const producerAcceleration = producer.gravity / (consumer.object.position.clone().distanceTo(producer.object.position.clone()) ^ 2);
+        const producerDirection = producer.object.position.clone().sub(consumer.object.position.clone());
+        const producerDistance = producerDirection.length();
+        if (producerDistance !== 0) { //only if the objects arent on the exact same point
+          const normalizedProducerDirection = producerDirection.multiplyScalar(1 / producerDistance);
+          acceleration.add(normalizedProducerDirection.multiplyScalar(producerAcceleration));
+        }
       }
-
-      consumer.object.position.add(consumer.movement.add(totalForce).clone().multiplyScalar(timeDelta / 2)); //TODO multiply correct?
+      //add average of acceleration of timestep
+      consumer.object.position.add(consumer.velocity.clone().multiplyScalar(timeDelta / 2));
+      consumer.velocity.add(acceleration); //update velocity
+      consumer.object.position.add(consumer.velocity.clone().multiplyScalar(timeDelta / 2)); //TODO multiply correct?
     }
   }
 }

@@ -19,7 +19,7 @@ export class RocketService {
     const r: Rocket = {
       id: 15,
       object: mesh,
-      movement: new Vector3(0, 0, 0), //no initial movement
+      velocity: new Vector3(0, 0, 0), //no initial movement
       stationary: false,
       activeControl: true,
       acceleration: new Vector3(0, 0, 0)

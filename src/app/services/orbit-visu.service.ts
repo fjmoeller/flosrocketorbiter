@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { PhysicsConsumer } from '../model/gravityObject';
-import { BufferGeometry, Color, Line, LineBasicMaterial, Points, PointsMaterial, Vector3 } from 'three';
+import { BufferGeometry, Color, Line, LineBasicMaterial } from 'three';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +23,7 @@ export class OrbitVisuService {
   }
 
   public createOrbitLine(color: Color): Line {
-    const lineGeometry = new BufferGeometry().setFromPoints([new Vector3(0,0,0),new Vector3(10,10,10),new Vector3(50,0,0)]);
+    const lineGeometry = new BufferGeometry();
     const lineMaterial = new LineBasicMaterial({ color: color });
     return new Line(lineGeometry, lineMaterial);
   }

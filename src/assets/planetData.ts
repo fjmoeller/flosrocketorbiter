@@ -1,4 +1,4 @@
-import { EllipseCurve, Vector3 } from "three";
+import { Vector3 } from "three";
 import { ImportPlanet } from "../app/model/planet";
 
 export const planets: ImportPlanet[] = [
@@ -9,15 +9,15 @@ export const planets: ImportPlanet[] = [
         gravity: 0, //TODO
         //startDelta: 0, //between 0 and 1
         texture: "", //TODO a link to the texure perhaps?
-        initialMovement: new Vector3(0, 0, 300),
-        initialPosition: new Vector3(100, 0, 0),
+        initialMovement: new Vector3(0, 0, 10),
+        initialPosition: new Vector3(50, 0, 0),
         stationary: false,
     },
     {
         id: 0,
         name: "Sun",
         radius: 20, //in meter
-        gravity: 0.00001, //TODO
+        gravity: 0.001, //TODO
         //startDelta: 0, //between 0 and 1
         texture: "", //TODO a link to the texure perhaps?
         initialMovement: new Vector3(0, 0, 0),
