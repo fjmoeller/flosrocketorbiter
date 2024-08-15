@@ -32,7 +32,7 @@ export class PlanetService {
       planets.push({
         id: importPlanet.id,
         object: sphere,
-        gravity: 6,
+        gravity: importPlanet.gravity,
         velocity: importPlanet.initialMovement,
         stationary: importPlanet.stationary,
         orbitalLine: line,

@@ -30,7 +30,7 @@ export class PhysicsService {
         // Calculate the gravity flux
         for (const producer of producers) {
           if (consumer.id === producer.id) continue; // don't make objects add gravity forces onto themselves
-          const producerAcceleration = producer.gravity*1000.0 / Math.pow(consumer.object.position.distanceTo(producer.object.position), 2);
+          const producerAcceleration = producer.gravity / Math.pow(consumer.object.position.distanceTo(producer.object.position), 2);
           const producerDirection = producer.object.position.clone().sub(consumer.object.position);
           acceleration.add(producerDirection.normalize().multiplyScalar(producerAcceleration));
         }

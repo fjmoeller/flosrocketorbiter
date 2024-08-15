@@ -6,7 +6,7 @@ export const planets: ImportPlanet[] = [
         id: 3,
         name: "Earth",
         radius: 5, //in meter
-        gravity: 0, //TODO
+        gravity: 214, //TODO
         //startDelta: 0, //between 0 and 1
         texture: "", //TODO a link to the texure perhaps?
         initialMovement: new Vector3(0, 0, 10),
@@ -17,7 +17,7 @@ export const planets: ImportPlanet[] = [
         id: 0,
         name: "Sun",
         radius: 20, //in meter
-        gravity: 0.001, //TODO
+        gravity: 6000, //TODO
         //startDelta: 0, //between 0 and 1
         texture: "", //TODO a link to the texure perhaps?
         initialMovement: new Vector3(0, 0, 0),
