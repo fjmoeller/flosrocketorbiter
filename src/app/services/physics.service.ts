@@ -14,30 +14,32 @@ export class PhysicsService {
   }
 
   public makePhysicsTimestep(producers: PhysicsProducer[], consumers: PhysicsConsumer[], timeDelta: number) {
-    for (const consumer of consumers) {
-      if (consumer.stationary) continue; //stationary objects dont get moved
 
-      const acceleration = new Vector3(0, 0, 0);
-      if (consumer.activeControl) { //acceleration of the active control of spacecraft
-        acceleration.add(consumer.acceleration.multiplyScalar(timeDelta));
-        consumer.acceleration.copy(new Vector3(0, 0, 0)); //reset acceleration for this step
-      }
+      for (const consumer of consumers) {
+        if (consumer.stationary) continue; // stationary objects don't get moved
 
-      for (const producer of producers) {
-        if (consumer.id === producer.id) continue; //dont make objects add gravity forces onto themselves
+        // First update the object position by half step
+        consumer.object.position.add(consumer.velocity.clone().multiplyScalar(timeDelta / 2));
 
-        const producerAcceleration = producer.gravity / (consumer.object.position.distanceTo(producer.object.position) ^ 2);
-        const producerDirection = producer.object.position.clone().sub(consumer.object.position);
-        const producerDistance = producerDirection.length();
-        if (producerDistance !== 0) { //only if the objects arent on the exact same point
-          const normalizedProducerDirection = producerDirection.multiplyScalar(1 / producerDistance);
-          acceleration.add(normalizedProducerDirection.multiplyScalar(producerAcceleration));
+        const acceleration = new Vector3(0, 0, 0);
+        if (consumer.activeControl) { //acceleration of the active control of spacecraft
+          acceleration.add(consumer.acceleration.multiplyScalar(timeDelta));
+          consumer.acceleration.copy(new Vector3(0, 0, 0)); //reset acceleration for this step
         }
-      }
-      //add average of acceleration of timestep
-      consumer.object.position.add(consumer.velocity.clone().multiplyScalar(timeDelta / 2));
-      consumer.velocity.add(acceleration); //update velocity
-      consumer.object.position.add(consumer.velocity.clone().multiplyScalar(timeDelta / 2));
+
+        // Calculate the gravity flux
+        for (const producer of producers) {
+          if (consumer.id === producer.id) continue; // don't make objects add gravity forces onto themselves
+          const producerAcceleration = producer.gravity*1000.0 / Math.pow(consumer.object.position.distanceTo(producer.object.position), 2);
+          const producerDirection = producer.object.position.clone().sub(consumer.object.position);
+          acceleration.add(producerDirection.normalize().multiplyScalar(producerAcceleration));
+        }
+        // update vessel velocity
+        consumer.velocity.add(acceleration.multiplyScalar(timeDelta)); //update velocity
+
+        // Lastly update the object position by half step
+        consumer.object.position.add(consumer.velocity.clone().multiplyScalar(timeDelta / 2));
+
     }
   }
 }
