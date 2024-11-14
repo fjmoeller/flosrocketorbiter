@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { PhysicsService } from './physics.service';
-import { Vector3 } from 'three';
+import { Euler, Vector3 } from 'three';
 import { PhysicsConsumer } from '../model/gravityObject';
 
 @Injectable({
@@ -8,20 +7,22 @@ import { PhysicsConsumer } from '../model/gravityObject';
 })
 export class PlayerInputService {
 
-  constructor(private physicsService: PhysicsService) { }
+  constructor() { }
 
-  public handlePlayerKeyboardInput(event: KeyboardEvent, activeVessel: PhysicsConsumer): void {
-    switch(event.key){
-      //case "W": 
-      //case "A":
-      //case "S":
-      //case "D":
-      case "h": activeVessel.acceleration.add(new Vector3(0.1,0,0)); break;
-      case "n": activeVessel.acceleration.add(new Vector3(-0.1,0,0)); break;
-      case "i": activeVessel.acceleration.add(new Vector3(0,-0.1,0)); break;
-      case "j": activeVessel.acceleration.add(new Vector3(0,0,0.1)); break;
-      case "k": activeVessel.acceleration.add(new Vector3(0,0.1,0)); break;
-      case "l": activeVessel.acceleration.add(new Vector3(0,0,-0.1)); break;
+  public handlePlayerKeyboardInput(event: KeyboardEvent, activeVessel: PhysicsConsumer, isDown: boolean): void {
+    switch (event.key) {
+      case "q": activeVessel.rotationacceleration.x = -1; break; //todo maybe 180 or math.pi?
+      case "e": activeVessel.rotationacceleration.x = 1; break;
+      case "w": activeVessel.rotationacceleration.z = -1; break;
+      case "a": activeVessel.rotationacceleration.z = 1; break;
+      case "s": activeVessel.rotationacceleration.y = -1; break;
+      case "d": activeVessel.rotationacceleration.y = 1; break;
+      case "h": activeVessel.acceleration.add(new Vector3(0.1, 0, 0)); break;
+      case "n": activeVessel.acceleration.add(new Vector3(-0.1, 0, 0)); break;
+      case "i": activeVessel.acceleration.add(new Vector3(0, -0.1, 0)); break;
+      case "j": activeVessel.acceleration.add(new Vector3(0, 0, 0.1)); break;
+      case "k": activeVessel.acceleration.add(new Vector3(0, 0.1, 0)); break;
+      case "l": activeVessel.acceleration.add(new Vector3(0, 0, -0.1)); break;
     }
   }
 }

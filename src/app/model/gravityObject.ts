@@ -1,4 +1,4 @@
-import { Line, Object3D, Vector3 } from "three";
+import { Euler, Line, Object3D, Quaternion, Vector3 } from "three";
 
 export interface PhysicsProducer {
     id: number; //TODO change this id stuff or maybe have a global id counter?
@@ -9,12 +9,19 @@ export interface PhysicsProducer {
 export interface PhysicsConsumer {
     id: number;
     object: Object3D;
+
     velocity: Vector3;
-    stationary: boolean;
-    orbitalLine?: Line;
-    previousPositions?: Vector3[];
-    activeControl: boolean;
     acceleration: Vector3;
+
+    rotationVelocity: Euler;
+    rotationacceleration: Euler;
+
+    previousPositions?: Vector3[];
+
+    orbitalLine?: Line;
+
+    stationary: boolean;
+    activeControl: boolean;
     //TODO rotation & rotation accel
 }
 

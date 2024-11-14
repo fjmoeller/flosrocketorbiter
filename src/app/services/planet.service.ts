@@ -26,21 +26,28 @@ export class PlanetService {
       const material = new MeshBasicMaterial({ color: orbitColor });
       const sphere = new Mesh(geometry, material);
       sphere.position.copy(importPlanet.initialPosition);
+      sphere.rotation.copy(importPlanet.initialRotation);
 
       const line = this.orbitVisuService.createOrbitLine(orbitColor);
 
       planets.push({
         id: importPlanet.id,
+        
         object: sphere,
-        gravity: importPlanet.gravity,
+        
         velocity: importPlanet.initialMovement,
-        stationary: importPlanet.stationary,
-        orbitalLine: line,
-        previousPositions: [],
-        activeControl: false,
+        rotationVelocity: importPlanet.initialRotationVelocity ?? new Euler(),
         acceleration: new Vector3(0, 0, 0),
-        position: importPlanet.initialPosition,
-        rotation: importPlanet.initialRotation ?? new Euler()
+        rotationacceleration: new Euler(),
+
+        previousPositions: [],
+
+        orbitalLine: line,
+
+        stationary: importPlanet.stationary,
+        activeControl: false,
+
+        gravity: importPlanet.gravity,
       } as Planet);
     }
     return planets;

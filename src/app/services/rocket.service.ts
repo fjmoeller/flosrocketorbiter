@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BoxGeometry, Color, Mesh, MeshBasicMaterial, Vector3 } from 'three';
+import { BoxGeometry, Color, Euler, Mesh, MeshBasicMaterial, Vector3 } from 'three';
 import { Rocket } from '../model/rocket';
 
 @Injectable({
@@ -22,7 +22,9 @@ export class RocketService {
       velocity: new Vector3(0, 0, 0), //no initial movement
       stationary: false,
       activeControl: true,
-      acceleration: new Vector3(0, 0, 0)
+      acceleration: new Vector3(0, 0, 0),
+      rotationacceleration: new Euler(),
+      rotationVelocity: new Euler()
     };
     return r;
   }

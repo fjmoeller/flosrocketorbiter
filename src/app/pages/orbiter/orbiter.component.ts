@@ -17,10 +17,16 @@ import { PhysicsConsumer } from '../../model/gravityObject';
 })
 export class OrbiterComponent implements OnInit {
 
-  @HostListener('document:keypress', ['$event']) //TODO maybe detect keyup & keydown
-  handleKeyboardEvent(event: KeyboardEvent) {
+  @HostListener('document:keyup', ['$event']) //TODO maybe detect keyup & keydown
+  handleKeyboardUpEvent(event: KeyboardEvent) {
     if (this.activeVessel)
-      this.playerInputService.handlePlayerKeyboardInput(event, this.activeVessel);
+      this.playerInputService.handlePlayerKeyboardInput(event, this.activeVessel, false);
+  }
+
+  @HostListener('document:keydown', ['$event']) //TODO maybe detect keyup & keydown
+  handleKeyboardDownEvent(event: KeyboardEvent) {
+    if (this.activeVessel)
+      this.playerInputService.handlePlayerKeyboardInput(event, this.activeVessel, true);
   }
 
   //public ENABLE_SHADOWS: boolean = false;
